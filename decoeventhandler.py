@@ -12,9 +12,9 @@ class handler:
 	def __init__(self):
 		self.events = {}
 
-	def on_event(self, event):
+	def on_event(self, *events):
 		def decorator(function):
-			self.events[event] = {"callback": function, "active": False}
+			self.events[events] = {"callback": function, "active": False}
 			def raise_err(*args, **kwargs):
 				raise DecoratedFunctionCallException
 			return raise_err
@@ -23,9 +23,15 @@ class handler:
 	def resolve_one_event(self, event):
 		return keyboard.is_pressed(event)
 
+	def resolve_all_events(self, events):
+		for event in events:
+			if not self.resolve_one_event(event):
+				return False
+		return True
+
 	def one_time_loop(self):
 		for event in self.events.keys():
-			if self.resolve_one_event(event):
+			if self.resolve_all_events(event):
 				if not self.events[event]["active"]:
 					self.events[event]["callback"]()
 				self.events[event]["active"] = True
