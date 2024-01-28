@@ -1,6 +1,7 @@
 # handles events such as key presses and mouse clicks through easy decorator layer
 import keyboard
 import pyautogui as pag
+import time
 
 class Exceptions:
 	class DecoratedFunctionCallException(Exception):
@@ -9,7 +10,7 @@ class Exceptions:
 class handler:
 	events = None
 	def __init__(self):
-		events = {}
+		self.events = {}
 
 	def on_event(self, event):
 		def decorator(function):
@@ -19,5 +20,19 @@ class handler:
 			return raise_err
 		return decorator
 
+	def resolve_one_event(self, event):
+		return keyboard.is_pressed(event)
+
 	def one_time_loop(self):
-		pass
+		for event in self.events.keys():
+			if self.resolve_one_event(event):
+				if not self.events[event]["active"]:
+					self.events[event]["callback"]()
+				self.events[event]["active"] = True
+			else:
+				self.events[event]["active"] = False
+
+	def loop(self, delay = 0):
+		while True:
+			time.sleep(delay)
+			self.one_time_loop()
