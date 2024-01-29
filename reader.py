@@ -27,7 +27,7 @@ def start():
 	while True:
 		for click in clicks:
 			execute_click(click)
-	time.sleep(delay)
+		time.sleep(delay)
 @keyboard.on_event(*quit_key_combination.split("+"))
 def quit():
 	filename = input("Save as: ")
