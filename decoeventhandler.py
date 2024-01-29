@@ -1,6 +1,5 @@
-# handles events such as key presses and mouse clicks through easy decorator layer
+# handles events such as key presses through easy decorator layer
 import keyboard
-import pyautogui as pag
 import time
 
 class Exceptions:
@@ -20,12 +19,9 @@ class handler:
 			return raise_err
 		return decorator
 
-	def resolve_one_event(self, event):
-		return keyboard.is_pressed(event)
-
 	def resolve_all_events(self, events):
 		for event in events:
-			if not self.resolve_one_event(event):
+			if not keyboard.is_pressed(event):
 				return False
 		return True
 
